@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set timeout 5
+spawn ./dwaar
+expect "pop-os 8010"
+send "?"
+sleep 1
+send " "
+sleep 2
+send "q"
