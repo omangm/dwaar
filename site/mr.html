@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dwaar — प्रत्येक टनेल, एकच टर्मिनल</title>
+<meta name="description" content="Dwaar हे SSH आणि लोकल पोर्ट फॉरवर्डिंग नियम व्यवस्थापित करण्यासाठी एक वेगवान, कीबोर्ड-चालित टर्मिनल UI आहे. नियम तयार करा, एका कीने टनेल्स सुरू-बंद करा आणि लाइव्ह ट्रॅफिक पाहा." />
+<meta name="theme-color" content="#1e1e2e" />
+<meta property="og:title" content="Dwaar — प्रत्येक टनेल, एकच टर्मिनल" />
+<meta property="og:description" content="SSH आणि लोकल पोर्ट फॉरवर्डिंगसाठी कीबोर्ड-चालित टर्मिनल UI." />
+<meta property="og:type" content="website" />
+<link rel="alternate" hreflang="en" href="index.html" />
+<link rel="alternate" hreflang="mr" href="mr.html" />
+<link rel="alternate" hreflang="x-default" href="index.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#main">मजकुराकडे जा</a>
+
+<header class="nav" id="top">
+  <div class="container nav__inner">
+    <a class="brand" href="#top" aria-label="Dwaar मुख्यपृष्ठ">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="brand__arch" d="M9 27V15a7 7 0 0 1 14 0v12" />
+        <path class="brand__arrow" d="M3 21h18" />
+        <path class="brand__head" d="M21 21l-4-3.2M21 21l-4 3.2" />
+      </svg>
+      <span class="brand__name">Dwaar</span>
+    </a>
+
+    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="नेव्हिगेशन टॉगल करा">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav__menu" id="nav-menu" aria-label="मुख्य">
+      <a href="#features">वैशिष्ट्ये</a>
+      <a href="#how">कसे चालते</a>
+      <a href="#keys">कीज</a>
+      <a href="#config">कॉन्फिग</a>
+      <a href="#install">इन्स्टॉल</a>
+      <div class="lang" role="group" aria-label="भाषा">
+        <a class="lang__item" href="index.html" lang="en" hreflang="en">EN</a>
+        <span class="lang__item" aria-current="true">मराठी</span>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="https://github.com/omangm/dwaar" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───────────────────────── Hero ───────────────────────── -->
+  <section class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow" data-reveal>
+          <span class="dot" aria-hidden="true"></span>
+          Go मध्ये लिहिलेले · Bubble Tea · टर्मिनल UI
+        </p>
+        <h1 class="hero__title" data-reveal>प्रत्येक टनेल,<br /><span class="grad">एकच टर्मिनल.</span></h1>
+        <p class="hero__lede" data-reveal>
+          <strong>Dwaar</strong> <span class="devanagari">(द्वार)</span> हे SSH आणि लोकल पोर्ट फॉरवर्ड
+          व्यवस्थापित करण्यासाठी एक वेगवान, कीबोर्ड-चालित TUI आहे. नियम तयार करा, टनेल्स सुरू-बंद करा
+          आणि लाइव्ह ट्रॅफिक पाहा — एकही <code>ssh -L</code> फ्लॅग पुन्हा टाइप न करता.
+        </p>
+
+        <div class="hero__actions" data-reveal>
+          <a class="btn btn--primary" href="#install">Dwaar इन्स्टॉल करा</a>
+          <a class="btn btn--ghost" href="#how">प्रत्यक्ष पाहा</a>
+        </div>
+
+        <div class="install" data-copy-root data-reveal>
+          <div class="install__bar">
+            <span class="install__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="install__label">बिल्ड करा व चालवा</span>
+          </div>
+          <pre class="install__code"><code id="install-snippet">git clone https://github.com/omangm/dwaar
+cd dwaar
+go build -o dwaar ./cmd/dwaar
+./dwaar</code></pre>
+          <button class="install__copy" type="button" data-copy="#install-snippet" data-copied-label="कॉपी झाले" aria-label="इन्स्टॉल कमांड्स कॉपी करा">कॉपी</button>
+        </div>
+      </div>
+
+      <div class="hero__demo" data-reveal>
+        <div class="term" id="term" data-theme="default">
+          <div class="term__titlebar">
+            <span class="term__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="term__title">dwaar — zsh</span>
+            <button class="term__theme" type="button" data-theme-toggle aria-label="थीम बदला">
+              <span data-theme-label>Default</span>
+            </button>
+          </div>
+          <div class="term__body" role="img" aria-label="Dwaar टर्मिनल इंटरफेस: पोर्ट फॉरवर्डिंग नियमांची यादी, स्थिती आणि लाइव्ह ट्रॅफिक काउंटरसह">
+            <div class="term__title-line">Dwaar - Port Forwarding</div>
+            <div class="term__rule">
+              <div class="term__rule-head state--running"><span class="mark">[*]</span> db-direct</div>
+              <div class="term__rule-desc">Local: 5432 -&gt; 10.0.0.5:5432 <span class="sep">|</span> <span class="up">↑ <span data-live data-value="1.2" data-rate="0.05" data-unit="MB">1.2 MB</span></span> <span class="down">↓ <span data-live data-value="3.4" data-rate="0.09" data-unit="MB">3.4 MB</span></span></div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--error"><span class="mark">[!]</span> api-staging</div>
+              <div class="term__rule-desc">Local: 8080 -&gt; 10.0.1.20:8080</div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--stopped"><span class="mark">[ ]</span> redis-via-bastion</div>
+              <div class="term__rule-desc">Local: 6379 -&gt; 10.0.0.6:6379</div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--stopped"><span class="mark">[ ]</span> metrics</div>
+              <div class="term__rule-desc">Local: 9090 -&gt; 10.0.0.9:9090</div>
+            </div>
+            <div class="term__hint"><span class="kbd">?</span> help &nbsp; <span class="kbd">space</span> toggle &nbsp; <span class="kbd">n</span> new &nbsp; <span class="kbd">q</span> quit</div>
+            <span class="term__cursor" aria-hidden="true">▋</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <ul class="stats" data-reveal>
+        <li><span class="stats__num" data-count="4">4</span><span class="stats__label">टनेल स्थिती ट्रॅक केल्या</span></li>
+        <li><span class="stats__num" data-count="1">1</span><span class="stats__label">कीस्ट्रोकमध्ये सुरू किंवा बंद</span></li>
+        <li><span class="stats__num" data-count="0">0</span><span class="stats__label">पुन्हा टाइप करायचे फ्लॅग</span></li>
+        <li><span class="stats__num" data-count="2">2</span><span class="stats__label">अंगभूत थीम्स</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Features ───────────────────────── -->
+  <section class="section" id="features">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">वैशिष्ट्ये</p>
+        <h2 class="section__title">टॅब न बदलता, सर्व टनेल्स एकाच ठिकाणी</h2>
+        <p class="section__lede">अनेक फॉरवर्ड्स सांभाळण्यासाठी लागणारे सर्व काही, एका स्क्रीनमध्ये — पूर्णपणे कीबोर्डवरून चालवता येणारे.</p>
+      </header>
+
+      <div class="grid grid--3">
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+          </div>
+          <h3>कीबोर्ड-प्रथम नियम व्यवस्थापक</h3>
+          <p>अंगभूत फॉर्ममध्ये फॉरवर्डिंग नियम जोडा, संपादित करा आणि हटवा — लोकल पोर्ट, रिमोट होस्ट व पोर्ट, SSH हॉप आणि ऑटोस्टार्ट टॉगलसह.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="3"/><path d="M9 12h6"/></svg>
+          </div>
+          <h3>एका कीने टनेल नियंत्रण</h3>
+          <p>नियम निवडा आणि <span class="kbd">space</span> दाबा. Dwaar लिसनर उघडते, ट्रॅफिक फॉरवर्ड करते आणि तितक्याच वेगाने बंदही करते.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <h3>एका दृष्टीक्षेपात स्थिती</h3>
+          <p><span class="pill pill--run">running</span> <span class="pill pill--stop">stopped</span> <span class="pill pill--err">error</span> थेट दिसतात, त्यामुळे बंद पडलेले टनेल स्क्रोलबॅकमध्ये लपत नाही.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 17V9M12 17V5M17 17v-6"/></svg>
+          </div>
+          <h3>लाइव्ह ट्रॅफिक आकडेवारी</h3>
+          <p>टनेल चालू असताना प्रत्येक टनेलचे पाठवलेले व प्राप्त बाइट काउंटर वाढतात — बाइट्स खरोखर हलत असल्याचा पुरावा.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 4h7l4 4v12H7z"/><path d="M14 4v4h4"/></svg>
+          </div>
+          <h3>कायमस्वरूपी YAML कॉन्फिग</h3>
+          <p>नियम <code>~/.config/dwaar/rules.yaml</code> मध्ये फक्त-वापरकर्त्यासाठी <code>0600</code> परवानग्यांसह सेव्ह होतात आणि पुढील वेळी पुन्हा लोड होतात.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg>
+          </div>
+          <h3>SSH हॉप्स, की किंवा पासवर्ड</h3>
+          <p>आयडेंटिटी फाइल किंवा पासवर्डसह बास्टियनमधून फॉरवर्ड करा. लोकल फॉरवर्डही चालतात — SSH लागत नाही.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── How it works ───────────────────────── -->
+  <section class="section section--alt" id="how">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">कसे चालते</p>
+        <h2 class="section__title">तीन पायऱ्या, आणि मग ते वाटेत येत नाही</h2>
+      </header>
+
+      <div class="steps">
+        <ol class="steps__list">
+          <li data-reveal>
+            <span class="steps__num">1</span>
+            <h3>नियम तयार करा</h3>
+            <p>मॅपिंग एकदाच ठरवा: लोकल पोर्ट → रिमोट <code>host:port</code>, हवे असल्यास SSH हॉपमधून, आणि नेहमी चालू हवे असल्यास ऑटोस्टार्ट.</p>
+          </li>
+          <li data-reveal>
+            <span class="steps__num">2</span>
+            <h3>space दाबा</h3>
+            <p>Dwaar लोकल पोर्ट बाइंड करते आणि ट्रॅफिक लक्ष्याकडे पाठवते. बंद करण्यासाठी पुन्हा <span class="kbd">space</span> दाबा.</p>
+          </li>
+          <li data-reveal>
+            <span class="steps__num">3</span>
+            <h3>चालू असताना पाहा</h3>
+            <p>एखादे टनेल <span class="kbd">l</span> ने आणि सर्व <span class="kbd">g</span> ने पाहा; यादीत लाइव्ह बाइट काउंटर वाचा.</p>
+          </li>
+        </ol>
+
+        <div class="demo" data-reveal>
+          <div class="demo__tabs" role="tablist" aria-label="स्क्रीन्स">
+            <button role="tab" aria-selected="true" aria-controls="panel-form" id="tab-form">नवीन नियम</button>
+            <button role="tab" aria-selected="false" aria-controls="panel-logs" id="tab-logs">लॉग्स</button>
+          </div>
+
+          <div class="demo__panel term term--bare" id="panel-form" role="tabpanel" aria-labelledby="tab-form" tabindex="0">
+            <div class="term__body">
+              <div class="term__title-line">Adding/Editing Rule</div>
+              <div class="form-row"><span class="form-label">Rule Name</span><span class="form-value">redis-via-bastion</span></div>
+              <div class="form-row"><span class="form-label">Local Port</span><span class="form-value">6379</span></div>
+              <div class="form-row"><span class="form-label">Remote Host</span><span class="form-value">10.0.0.6</span></div>
+              <div class="form-row"><span class="form-label">Remote Port</span><span class="form-value">6379</span></div>
+              <div class="form-row form-row--confirm"><span class="form-label">Forward over SSH?</span><span class="form-value">Yes</span></div>
+              <div class="form-row"><span class="form-label">SSH Host</span><span class="form-value">bastion.example.com</span></div>
+              <div class="form-row"><span class="form-label">SSH User</span><span class="form-value">deploy</span></div>
+              <div class="form-row"><span class="form-label">Identity File</span><span class="form-value">~/.ssh/id_ed25519</span></div>
+              <div class="term__hint"><span class="kbd">enter</span> next &nbsp; <span class="kbd">esc</span> cancel</div>
+            </div>
+          </div>
+
+          <div class="demo__panel term term--bare" id="panel-logs" role="tabpanel" aria-labelledby="tab-logs" tabindex="0" hidden>
+            <div class="term__body">
+              <div class="term__titlebar-inline">Global Logs (Press ESC to return)</div>
+              <pre class="log"><span class="log__ts">[db-direct]</span> Starting tunnel...
+<span class="log__ok">[db-direct]</span> Tunnel started successfully.
+<span class="log__ts">[api-staging]</span> Starting tunnel...
+<span class="log__err">[api-staging]</span> Failed to start tunnel: dial tcp 10.0.1.20:22: connect: connection refused
+<span class="log__ts">[redis-via-bastion]</span> Tunnel started successfully.
+<span class="log__ts">[metrics]</span> Tunnel stopped.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Keys ───────────────────────── -->
+  <section class="section" id="keys">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">हाताची सवय</p>
+        <h2 class="section__title">एका मिनिटात शिकता येणाऱ्या कीज</h2>
+      </header>
+
+      <div class="keys" data-reveal>
+        <table class="keys__table">
+          <caption class="visually-hidden">Dwaar कीबाइंडिंग्ज</caption>
+          <tbody>
+            <tr><th scope="row"><span class="kbd">↑</span> <span class="kbd">↓</span> / <span class="kbd">j</span> <span class="kbd">k</span></th><td>नियम यादीत वर-खाली जा</td></tr>
+            <tr><th scope="row"><span class="kbd">/</span></th><td>नियम फिल्टर करा</td></tr>
+            <tr><th scope="row"><span class="kbd">n</span></th><td>नवीन नियम</td></tr>
+            <tr><th scope="row"><span class="kbd">e</span></th><td>निवडलेला नियम संपादित करा</td></tr>
+            <tr><th scope="row"><span class="kbd">d</span></th><td>निवडलेला नियम हटवा</td></tr>
+            <tr><th scope="row"><span class="kbd">space</span></th><td>टनेल सुरू / बंद टॉगल करा</td></tr>
+            <tr><th scope="row"><span class="kbd">l</span></th><td>निवडलेल्या टनेलचे लॉग उघडा</td></tr>
+            <tr><th scope="row"><span class="kbd">g</span></th><td>ग्लोबल लॉग उघडा</td></tr>
+            <tr><th scope="row"><span class="kbd">t</span></th><td>थीम बदला</td></tr>
+            <tr><th scope="row"><span class="kbd">?</span></th><td>मदत (help) टॉगल करा</td></tr>
+            <tr><th scope="row"><span class="kbd">esc</span></th><td>मागे / रद्द करा</td></tr>
+            <tr><th scope="row"><span class="kbd">q</span></th><td>बाहेर पडा</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Config ───────────────────────── -->
+  <section class="section section--alt" id="config">
+    <div class="container config">
+      <div class="config__copy" data-reveal>
+        <p class="section__eyebrow">कॉन्फिगरेशन</p>
+        <h2 class="section__title">साधे YAML, तुमच्याचकडे</h2>
+        <p class="section__lede">नियम स्वयंचलितपणे सेव्ह होतात. मोठ्या प्रमाणात नियम आयात किंवा बदलण्यासाठी फाइल हाताने संपादित करा — पुढील वेळी TUI बदल घेते.</p>
+        <ul class="checklist">
+          <li>ठिकाण: <code>~/.config/dwaar/rules.yaml</code></li>
+          <li>फक्त-वापरकर्त्यासाठी <code>0600</code> परवानग्यांसह लिहिले जाते</li>
+          <li><code>auto_start</code> लॉन्चवर टनेल्स सुरू करते</li>
+          <li>ऐच्छिक <code>via</code> ब्लॉक SSH बास्टियन जोडतो</li>
+        </ul>
+        <div class="notice">
+          <strong>टीप:</strong> कॉन्फिगमधील SSH पासवर्ड प्लेनटेक्स्टमध्ये ठेवला जातो, फक्त फाइल परवानग्यांनी संरक्षित. शक्य असल्यास की-आधारित प्रमाणीकरण वापरा.
+        </div>
+      </div>
+
+      <div class="config__code" data-reveal>
+        <div class="codeblock">
+          <div class="codeblock__bar">
+            <span class="codeblock__file">~/.config/dwaar/rules.yaml</span>
+            <button class="install__copy" type="button" data-copy="#yaml-snippet" data-copied-label="कॉपी झाले" aria-label="YAML कॉन्फिग कॉपी करा">कॉपी</button>
+          </div>
+          <pre><code id="yaml-snippet"><span class="c-key">version</span>: <span class="c-num">1</span>
+<span class="c-key">rules</span>:
+  - <span class="c-key">id</span>: <span class="c-str">rule_1</span>
+    <span class="c-key">name</span>: <span class="c-str">db-direct</span>
+    <span class="c-key">local_port</span>: <span class="c-num">5432</span>
+    <span class="c-key">remote_host</span>: <span class="c-str">10.0.0.5</span>
+    <span class="c-key">remote_port</span>: <span class="c-num">5432</span>
+    <span class="c-key">protocol</span>: <span class="c-str">tcp</span>
+    <span class="c-key">auto_start</span>: <span class="c-bool">true</span>
+  - <span class="c-key">id</span>: <span class="c-str">rule_2</span>
+    <span class="c-key">name</span>: <span class="c-str">redis-via-bastion</span>
+    <span class="c-key">local_port</span>: <span class="c-num">6379</span>
+    <span class="c-key">remote_host</span>: <span class="c-str">10.0.0.6</span>
+    <span class="c-key">remote_port</span>: <span class="c-num">6379</span>
+    <span class="c-key">protocol</span>: <span class="c-str">tcp</span>
+    <span class="c-key">auto_start</span>: <span class="c-bool">false</span>
+    <span class="c-key">via</span>:
+      <span class="c-key">host</span>: <span class="c-str">bastion.example.com</span>
+      <span class="c-key">port</span>: <span class="c-num">22</span>
+      <span class="c-key">user</span>: <span class="c-str">deploy</span>
+      <span class="c-key">identity_file</span>: <span class="c-str">~/.ssh/id_ed25519</span>
+      <span class="c-com"># password: hunter2  # identity_file ऐवजी पर्याय</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Install ───────────────────────── -->
+  <section class="section" id="install">
+    <div class="container install-cta">
+      <p class="section__eyebrow" data-reveal>सुरुवात करा</p>
+      <h2 class="section__title" data-reveal>तुमच्या टर्मिनलला एक दार द्या</h2>
+      <p class="section__lede" data-reveal>तुम्हाला <a href="https://golang.org/doc/install" rel="noopener">Go 1.26+</a> आवश्यक आहे. क्लोन करा, बिल्ड करा, चालवा — दुसरे काही इन्स्टॉल करायचे नाही.</p>
+
+      <div class="install install--wide" data-copy-root data-reveal>
+        <div class="install__bar">
+          <span class="install__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="install__label">इन्स्टॉल</span>
+        </div>
+        <pre class="install__code"><code id="install-snippet-2">git clone https://github.com/omangm/dwaar
+cd dwaar
+go build -o dwaar ./cmd/dwaar
+./dwaar</code></pre>
+        <button class="install__copy" type="button" data-copy="#install-snippet-2" data-copied-label="कॉपी झाले" aria-label="इन्स्टॉल कमांड्स कॉपी करा">कॉपी</button>
+      </div>
+
+      <div class="install-cta__actions" data-reveal>
+        <a class="btn btn--primary" href="https://github.com/omangm/dwaar" rel="noopener">GitHub वर पाहा</a>
+        <a class="btn btn--ghost" href="https://github.com/omangm/dwaar#readme" rel="noopener">डॉक्स वाचा</a>
+      </div>
+
+      <p class="install-cta__note" data-reveal>टेस्ट सूट चालवा: <code>go test ./...</code></p>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── FAQ ───────────────────────── -->
+  <section class="section section--alt" id="faq">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">प्रश्न</p>
+        <h2 class="section__title">माहिती असावी</h2>
+      </header>
+      <div class="faq">
+        <details data-reveal>
+          <summary>लोकल फॉरवर्डसाठी SSH सर्व्हर लागतो का?</summary>
+          <p>नाही. नियमात <code>via</code> ब्लॉक नसल्यास, Dwaar लोकल पोर्ट बाइंड करते आणि थेट रिमोट <code>host:port</code> वर फॉरवर्ड करते.</p>
+        </details>
+        <details data-reveal>
+          <summary>माझे नियम कसे सेव्ह होतात?</summary>
+          <p>स्वयंचलितपणे <code>~/.config/dwaar/rules.yaml</code> मध्ये. डिरेक्टरी <code>0700</code> आणि फाइल <code>0600</code> परवानग्यांसह तयार होते.</p>
+        </details>
+        <details data-reveal>
+          <summary>Dwaar सुरू झाल्यावर टनेल्स सुरू करता येतात का?</summary>
+          <p>होय — नियमावर <code>auto_start: true</code> ठेवा (किंवा फॉर्ममधील टॉगल चालू करा) आणि Dwaar ते सुरू होताना उघडते. अयशस्वी झाल्यास error स्थिती दिसते.</p>
+        </details>
+        <details data-reveal>
+          <summary>कोणते प्रोटोकॉल सपोर्टेड आहेत?</summary>
+          <p>नियमांमध्ये <code>protocol</code> फील्ड असते; सध्या अंगभूत फॉर्म TCP फॉरवर्ड तयार करतो.</p>
+        </details>
+        <details data-reveal>
+          <summary>हळू टर्मिनलवर चालते का?</summary>
+          <p>Dwaar Bubble Tea वापरून रेंडर करते आणि काउंटर सेकंदाला एकदा रिफ्रेश करते, त्यामुळे SSH वर आणि tmux मध्येही प्रतिसादक्षम राहते.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand" data-reveal>
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="brand__arch" d="M9 27V15a7 7 0 0 1 14 0v12" />
+        <path class="brand__arrow" d="M3 21h18" />
+        <path class="brand__head" d="M21 21l-4-3.2M21 21l-4 3.2" />
+      </svg>
+      <div>
+        <p class="footer__name">Dwaar</p>
+        <p class="footer__tag">प्रत्येक टनेल, एकच टर्मिनल.</p>
+      </div>
+    </div>
+
+    <nav class="footer__links" data-reveal aria-label="फूटर">
+      <a href="#features">वैशिष्ट्ये</a>
+      <a href="#how">कसे चालते</a>
+      <a href="#config">कॉन्फिगरेशन</a>
+      <a href="#install">इन्स्टॉल</a>
+      <a href="https://github.com/omangm/dwaar" rel="noopener">GitHub</a>
+      <a href="index.html" lang="en" hreflang="en">English</a>
+    </nav>
+
+    <p class="footer__meta" data-reveal>
+      <a href="https://opensource.org/licenses/MIT" rel="noopener">MIT परवान्यांतर्गत</a> प्रकाशित.
+      <a href="https://github.com/charmbracelet/bubbletea" rel="noopener">Bubble Tea</a>,
+      <a href="https://github.com/charmbracelet/lipgloss" rel="noopener">Lip Gloss</a>,
+      <a href="https://github.com/charmbracelet/bubbles" rel="noopener">Bubbles</a> व
+      <a href="https://github.com/charmbracelet/huh" rel="noopener">Huh</a> वापरून तयार.
+    </p>
+  </div>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>

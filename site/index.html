@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dwaar — Every tunnel, one terminal</title>
+<meta name="description" content="Dwaar is a fast, keyboard-driven terminal UI for managing SSH and local port forwarding rules. Create tunnels, start and stop them with a keystroke, and watch live traffic." />
+<meta name="theme-color" content="#1e1e2e" />
+<meta property="og:title" content="Dwaar — Every tunnel, one terminal" />
+<meta property="og:description" content="A keyboard-driven terminal UI for SSH and local port forwarding." />
+<meta property="og:type" content="website" />
+<link rel="alternate" hreflang="en" href="index.html" />
+<link rel="alternate" hreflang="mr" href="mr.html" />
+<link rel="alternate" hreflang="x-default" href="index.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" id="top">
+  <div class="container nav__inner">
+    <a class="brand" href="#top" aria-label="Dwaar home">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="brand__arch" d="M9 27V15a7 7 0 0 1 14 0v12" />
+        <path class="brand__arrow" d="M3 21h18" />
+        <path class="brand__head" d="M21 21l-4-3.2M21 21l-4 3.2" />
+      </svg>
+      <span class="brand__name">Dwaar</span>
+    </a>
+
+    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav__menu" id="nav-menu" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#keys">Keys</a>
+      <a href="#config">Config</a>
+      <a href="#install">Install</a>
+      <div class="lang" role="group" aria-label="Language">
+        <span class="lang__item" aria-current="true">EN</span>
+        <a class="lang__item" href="mr.html" lang="mr" hreflang="mr">मराठी</a>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="https://github.com/omangm/dwaar" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───────────────────────── Hero ───────────────────────── -->
+  <section class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow" data-reveal>
+          <span class="dot" aria-hidden="true"></span>
+          Written in Go · Bubble Tea · Terminal UI
+        </p>
+        <h1 class="hero__title" data-reveal>Every tunnel,<br /><span class="grad">one terminal.</span></h1>
+        <p class="hero__lede" data-reveal>
+          <strong>Dwaar</strong> <span class="devanagari">(द्वार)</span> is a fast, keyboard-driven TUI
+          for managing SSH and local port forwards. Create rules, start and stop tunnels, and
+          watch live traffic — without re-typing a single <code>ssh -L</code> flag.
+        </p>
+
+        <div class="hero__actions" data-reveal>
+          <a class="btn btn--primary" href="#install">Install Dwaar</a>
+          <a class="btn btn--ghost" href="#how">See it in action</a>
+        </div>
+
+        <div class="install" data-copy-root data-reveal>
+          <div class="install__bar">
+            <span class="install__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="install__label">build &amp; run</span>
+          </div>
+          <pre class="install__code"><code id="install-snippet">git clone https://github.com/omangm/dwaar
+cd dwaar
+go build -o dwaar ./cmd/dwaar
+./dwaar</code></pre>
+          <button class="install__copy" type="button" data-copy="#install-snippet" data-copied-label="Copied" aria-label="Copy install commands">Copy</button>
+        </div>
+      </div>
+
+      <div class="hero__demo" data-reveal>
+        <div class="term" id="term" data-theme="default">
+          <div class="term__titlebar">
+            <span class="term__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="term__title">dwaar — zsh</span>
+            <button class="term__theme" type="button" data-theme-toggle aria-label="Switch theme">
+              <span data-theme-label>Default</span>
+            </button>
+          </div>
+          <div class="term__body" role="img" aria-label="Dwaar terminal interface showing a list of port forwarding rules with statuses and live traffic counters">
+            <div class="term__title-line">Dwaar - Port Forwarding</div>
+            <div class="term__rule">
+              <div class="term__rule-head state--running"><span class="mark">[*]</span> db-direct</div>
+              <div class="term__rule-desc">Local: 5432 -&gt; 10.0.0.5:5432 <span class="sep">|</span> <span class="up">↑ <span data-live data-value="1.2" data-rate="0.05" data-unit="MB">1.2 MB</span></span> <span class="down">↓ <span data-live data-value="3.4" data-rate="0.09" data-unit="MB">3.4 MB</span></span></div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--error"><span class="mark">[!]</span> api-staging</div>
+              <div class="term__rule-desc">Local: 8080 -&gt; 10.0.1.20:8080</div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--stopped"><span class="mark">[ ]</span> redis-via-bastion</div>
+              <div class="term__rule-desc">Local: 6379 -&gt; 10.0.0.6:6379</div>
+            </div>
+            <div class="term__rule">
+              <div class="term__rule-head state--stopped"><span class="mark">[ ]</span> metrics</div>
+              <div class="term__rule-desc">Local: 9090 -&gt; 10.0.0.9:9090</div>
+            </div>
+            <div class="term__hint"><span class="kbd">?</span> help &nbsp; <span class="kbd">space</span> toggle &nbsp; <span class="kbd">n</span> new &nbsp; <span class="kbd">q</span> quit</div>
+            <span class="term__cursor" aria-hidden="true">▋</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <ul class="stats" data-reveal>
+        <li><span class="stats__num" data-count="4">4</span><span class="stats__label">tunnel states tracked</span></li>
+        <li><span class="stats__num" data-count="1">1</span><span class="stats__label">keystroke to start or stop</span></li>
+        <li><span class="stats__num" data-count="0">0</span><span class="stats__label">flags to retype</span></li>
+        <li><span class="stats__num" data-count="2">2</span><span class="stats__label">built-in themes</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Features ───────────────────────── -->
+  <section class="section" id="features">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">Features</p>
+        <h2 class="section__title">Tunnels without the tab-juggling</h2>
+        <p class="section__lede">Everything you need to keep a fleet of forwards straight, in one screen you can drive entirely from the keyboard.</p>
+      </header>
+
+      <div class="grid grid--3">
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+          </div>
+          <h3>Keyboard-first rule manager</h3>
+          <p>Add, edit, and delete forwarding rules in a built-in form — local port, remote host and port, SSH hop, and autostart toggles included.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="3"/><path d="M9 12h6"/></svg>
+          </div>
+          <h3>One-key tunnel control</h3>
+          <p>Highlight a rule and hit <span class="kbd">space</span>. Dwaar opens the listener, forwards traffic, and tears it down just as fast.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <h3>Status at a glance</h3>
+          <p><span class="pill pill--run">running</span> <span class="pill pill--stop">stopped</span> <span class="pill pill--err">error</span> are surfaced inline, so a dead tunnel never hides in a scrollback.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 17V9M12 17V5M17 17v-6"/></svg>
+          </div>
+          <h3>Live traffic stats</h3>
+          <p>Per-tunnel sent and received byte counters tick up while a tunnel runs — proof that bytes are actually moving.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 4h7l4 4v12H7z"/><path d="M14 4v4h4"/></svg>
+          </div>
+          <h3>Persistent YAML config</h3>
+          <p>Rules are saved to <code>~/.config/dwaar/rules.yaml</code> with user-only <code>0600</code> permissions, and loaded again on the next run.</p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg>
+          </div>
+          <h3>SSH hops, key or password</h3>
+          <p>Forward through a bastion with an identity file or a password. Local forwards work too — no SSH required.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── How it works ───────────────────────── -->
+  <section class="section section--alt" id="how">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">How it works</p>
+        <h2 class="section__title">Three steps, then it stays out of the way</h2>
+      </header>
+
+      <div class="steps">
+        <ol class="steps__list">
+          <li data-reveal>
+            <span class="steps__num">1</span>
+            <h3>Define a rule</h3>
+            <p>Describe the mapping once: local port → remote <code>host:port</code>, optionally through an SSH hop, with autostart if you always want it up.</p>
+          </li>
+          <li data-reveal>
+            <span class="steps__num">2</span>
+            <h3>Press space</h3>
+            <p>Dwaar binds the local port and pipes traffic to the target. Press space again to stop it.</p>
+          </li>
+          <li data-reveal>
+            <span class="steps__num">3</span>
+            <h3>Watch it run</h3>
+            <p>Follow a single tunnel with <span class="kbd">l</span> or everything with <span class="kbd">g</span>, and read live byte counters in the list.</p>
+          </li>
+        </ol>
+
+        <div class="demo" data-reveal>
+          <div class="demo__tabs" role="tablist" aria-label="Screens">
+            <button role="tab" aria-selected="true" aria-controls="panel-form" id="tab-form">New rule</button>
+            <button role="tab" aria-selected="false" aria-controls="panel-logs" id="tab-logs">Logs</button>
+          </div>
+
+          <div class="demo__panel term term--bare" id="panel-form" role="tabpanel" aria-labelledby="tab-form" tabindex="0">
+            <div class="term__body">
+              <div class="term__title-line">Adding/Editing Rule</div>
+              <div class="form-row"><span class="form-label">Rule Name</span><span class="form-value">redis-via-bastion</span></div>
+              <div class="form-row"><span class="form-label">Local Port</span><span class="form-value">6379</span></div>
+              <div class="form-row"><span class="form-label">Remote Host</span><span class="form-value">10.0.0.6</span></div>
+              <div class="form-row"><span class="form-label">Remote Port</span><span class="form-value">6379</span></div>
+              <div class="form-row form-row--confirm"><span class="form-label">Forward over SSH?</span><span class="form-value">Yes</span></div>
+              <div class="form-row"><span class="form-label">SSH Host</span><span class="form-value">bastion.example.com</span></div>
+              <div class="form-row"><span class="form-label">SSH User</span><span class="form-value">deploy</span></div>
+              <div class="form-row"><span class="form-label">Identity File</span><span class="form-value">~/.ssh/id_ed25519</span></div>
+              <div class="term__hint"><span class="kbd">enter</span> next &nbsp; <span class="kbd">esc</span> cancel</div>
+            </div>
+          </div>
+
+          <div class="demo__panel term term--bare" id="panel-logs" role="tabpanel" aria-labelledby="tab-logs" tabindex="0" hidden>
+            <div class="term__body">
+              <div class="term__titlebar-inline">Global Logs (Press ESC to return)</div>
+              <pre class="log"><span class="log__ts">[db-direct]</span> Starting tunnel...
+<span class="log__ok">[db-direct]</span> Tunnel started successfully.
+<span class="log__ts">[api-staging]</span> Starting tunnel...
+<span class="log__err">[api-staging]</span> Failed to start tunnel: dial tcp 10.0.1.20:22: connect: connection refused
+<span class="log__ts">[redis-via-bastion]</span> Tunnel started successfully.
+<span class="log__ts">[metrics]</span> Tunnel stopped.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Keys ───────────────────────── -->
+  <section class="section" id="keys">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">Muscle memory</p>
+        <h2 class="section__title">Keys you can learn in a minute</h2>
+      </header>
+
+      <div class="keys" data-reveal>
+        <table class="keys__table">
+          <caption class="visually-hidden">Dwaar key bindings</caption>
+          <tbody>
+            <tr><th scope="row"><span class="kbd">↑</span> <span class="kbd">↓</span> / <span class="kbd">j</span> <span class="kbd">k</span></th><td>Navigate the rule list</td></tr>
+            <tr><th scope="row"><span class="kbd">/</span></th><td>Filter rules</td></tr>
+            <tr><th scope="row"><span class="kbd">n</span></th><td>New rule</td></tr>
+            <tr><th scope="row"><span class="kbd">e</span></th><td>Edit selected rule</td></tr>
+            <tr><th scope="row"><span class="kbd">d</span></th><td>Delete selected rule</td></tr>
+            <tr><th scope="row"><span class="kbd">space</span></th><td>Toggle start / stop tunnel</td></tr>
+            <tr><th scope="row"><span class="kbd">l</span></th><td>Open logs for the selected tunnel</td></tr>
+            <tr><th scope="row"><span class="kbd">g</span></th><td>Open global logs</td></tr>
+            <tr><th scope="row"><span class="kbd">t</span></th><td>Toggle theme</td></tr>
+            <tr><th scope="row"><span class="kbd">?</span></th><td>Toggle help overlay</td></tr>
+            <tr><th scope="row"><span class="kbd">esc</span></th><td>Back / cancel</td></tr>
+            <tr><th scope="row"><span class="kbd">q</span></th><td>Quit</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Config ───────────────────────── -->
+  <section class="section section--alt" id="config">
+    <div class="container config">
+      <div class="config__copy" data-reveal>
+        <p class="section__eyebrow">Configuration</p>
+        <h2 class="section__title">Plain YAML, yours to keep</h2>
+        <p class="section__lede">Rules persist automatically. Edit the file by hand to import or bulk-modify forwards — the TUI picks up the changes on the next launch.</p>
+        <ul class="checklist">
+          <li>Stored at <code>~/.config/dwaar/rules.yaml</code></li>
+          <li>Written with user-only <code>0600</code> permissions</li>
+          <li><code>auto_start</code> brings up tunnels on launch</li>
+          <li>Optional <code>via</code> block attaches an SSH bastion</li>
+        </ul>
+        <div class="notice">
+          <strong>Heads up:</strong> an SSH password in the config is stored in plaintext, protected only by file permissions. Prefer key-based authentication.
+        </div>
+      </div>
+
+      <div class="config__code" data-reveal>
+        <div class="codeblock">
+          <div class="codeblock__bar">
+            <span class="codeblock__file">~/.config/dwaar/rules.yaml</span>
+            <button class="install__copy" type="button" data-copy="#yaml-snippet" data-copied-label="Copied" aria-label="Copy YAML configuration">Copy</button>
+          </div>
+          <pre><code id="yaml-snippet"><span class="c-key">version</span>: <span class="c-num">1</span>
+<span class="c-key">rules</span>:
+  - <span class="c-key">id</span>: <span class="c-str">rule_1</span>
+    <span class="c-key">name</span>: <span class="c-str">db-direct</span>
+    <span class="c-key">local_port</span>: <span class="c-num">5432</span>
+    <span class="c-key">remote_host</span>: <span class="c-str">10.0.0.5</span>
+    <span class="c-key">remote_port</span>: <span class="c-num">5432</span>
+    <span class="c-key">protocol</span>: <span class="c-str">tcp</span>
+    <span class="c-key">auto_start</span>: <span class="c-bool">true</span>
+  - <span class="c-key">id</span>: <span class="c-str">rule_2</span>
+    <span class="c-key">name</span>: <span class="c-str">redis-via-bastion</span>
+    <span class="c-key">local_port</span>: <span class="c-num">6379</span>
+    <span class="c-key">remote_host</span>: <span class="c-str">10.0.0.6</span>
+    <span class="c-key">remote_port</span>: <span class="c-num">6379</span>
+    <span class="c-key">protocol</span>: <span class="c-str">tcp</span>
+    <span class="c-key">auto_start</span>: <span class="c-bool">false</span>
+    <span class="c-key">via</span>:
+      <span class="c-key">host</span>: <span class="c-str">bastion.example.com</span>
+      <span class="c-key">port</span>: <span class="c-num">22</span>
+      <span class="c-key">user</span>: <span class="c-str">deploy</span>
+      <span class="c-key">identity_file</span>: <span class="c-str">~/.ssh/id_ed25519</span>
+      <span class="c-com"># password: hunter2  # alternative to identity_file</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Install ───────────────────────── -->
+  <section class="section" id="install">
+    <div class="container install-cta">
+      <p class="section__eyebrow" data-reveal>Get started</p>
+      <h2 class="section__title" data-reveal>Add a door to your terminal</h2>
+      <p class="section__lede" data-reveal>You need <a href="https://golang.org/doc/install" rel="noopener">Go 1.26+</a>. Clone, build, run — there is nothing else to install.</p>
+
+      <div class="install install--wide" data-copy-root data-reveal>
+        <div class="install__bar">
+          <span class="install__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="install__label">install</span>
+        </div>
+        <pre class="install__code"><code id="install-snippet-2">git clone https://github.com/omangm/dwaar
+cd dwaar
+go build -o dwaar ./cmd/dwaar
+./dwaar</code></pre>
+        <button class="install__copy" type="button" data-copy="#install-snippet-2" data-copied-label="Copied" aria-label="Copy install commands">Copy</button>
+      </div>
+
+      <div class="install-cta__actions" data-reveal>
+        <a class="btn btn--primary" href="https://github.com/omangm/dwaar" rel="noopener">View on GitHub</a>
+        <a class="btn btn--ghost" href="https://github.com/omangm/dwaar#readme" rel="noopener">Read the docs</a>
+      </div>
+
+      <p class="install-cta__note" data-reveal>Run the test suite with <code>go test ./...</code></p>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── FAQ ───────────────────────── -->
+  <section class="section section--alt" id="faq">
+    <div class="container">
+      <header class="section__head" data-reveal>
+        <p class="section__eyebrow">Questions</p>
+        <h2 class="section__title">Good to know</h2>
+      </header>
+      <div class="faq">
+        <details data-reveal>
+          <summary>Do I need an SSH server for local forwards?</summary>
+          <p>No. If a rule has no <code>via</code> block, Dwaar binds the local port and forwards straight to the remote <code>host:port</code>.</p>
+        </details>
+        <details data-reveal>
+          <summary>How are my rules saved?</summary>
+          <p>Automatically to <code>~/.config/dwaar/rules.yaml</code>. The directory is created with <code>0700</code> and the file with <code>0600</code> permissions.</p>
+        </details>
+        <details data-reveal>
+          <summary>Can I start tunnels when Dwaar launches?</summary>
+          <p>Yes — set <code>auto_start: true</code> on a rule (or flip the toggle in the form) and Dwaar brings it up on startup. Failures show up as an error status.</p>
+        </details>
+        <details data-reveal>
+          <summary>Which protocols are supported?</summary>
+          <p>Rules carry a <code>protocol</code> field; the built-in form currently creates TCP forwards.</p>
+        </details>
+        <details data-reveal>
+          <summary>Does it work over a slow terminal?</summary>
+          <p>Dwaar renders with Bubble Tea and refreshes counters once per second, so it stays responsive over SSH and in tmux.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand" data-reveal>
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="brand__arch" d="M9 27V15a7 7 0 0 1 14 0v12" />
+        <path class="brand__arrow" d="M3 21h18" />
+        <path class="brand__head" d="M21 21l-4-3.2M21 21l-4 3.2" />
+      </svg>
+      <div>
+        <p class="footer__name">Dwaar</p>
+        <p class="footer__tag">Every tunnel, one terminal.</p>
+      </div>
+    </div>
+
+    <nav class="footer__links" data-reveal aria-label="Footer">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#config">Configuration</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/omangm/dwaar" rel="noopener">GitHub</a>
+      <a href="mr.html" lang="mr" hreflang="mr">मराठी</a>
+    </nav>
+
+    <p class="footer__meta" data-reveal>
+      Released under the <a href="https://opensource.org/licenses/MIT" rel="noopener">MIT License</a>.
+      Built with <a href="https://github.com/charmbracelet/bubbletea" rel="noopener">Bubble Tea</a>,
+      <a href="https://github.com/charmbracelet/lipgloss" rel="noopener">Lip Gloss</a>,
+      <a href="https://github.com/charmbracelet/bubbles" rel="noopener">Bubbles</a> &amp;
+      <a href="https://github.com/charmbracelet/huh" rel="noopener">Huh</a>.
+    </p>
+  </div>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>
