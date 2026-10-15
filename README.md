@@ -12,11 +12,13 @@ Managing port forwarding rules via CLI can become cumbersome, especially with mu
 
 ## Features
 
-- **TUI Management**: Add, edit, and delete port forwarding rules using a built-in form interface.
-- **Tunnel Control**: Start, stop, and restart individual tunnels with single keystrokes.
+- **TUI Management**: Add, edit, and delete port forwarding rules using a built-in form interface, including SSH hop settings and an autostart toggle.
+- **Tunnel Control**: Start and stop individual tunnels with a single keystroke.
 - **Status Indicators**: Visual cues for `running`, `stopped`, `connecting`, and `error` states.
+- **Live Traffic Stats**: Per-tunnel sent/received byte counters while a tunnel is running.
 - **Persistent Configuration**: Rules are saved to and loaded from a YAML configuration file.
 - **SSH Support**: Forward ports over SSH with key and password authentication.
+- **Themes**: Switch between the default and Catppuccin themes at runtime.
 
 ## Tech Stack
 
@@ -28,7 +30,7 @@ Managing port forwarding rules via CLI can become cumbersome, especially with mu
 
 ## Installation
 
-Ensure you have [Go](https://golang.org/doc/install) installed (version 1.21+ recommended).
+Ensure you have [Go](https://golang.org/doc/install) installed (version 1.26+ recommended).
 
 ```bash
 git clone <repository-url>/dwaar
@@ -49,20 +51,50 @@ Run the built executable to start the application:
 | Key | Action |
 |---|---|
 | `↑` / `↓` or `j` / `k` | Navigate list |
-| `Enter` | View details / open logs |
+| `/` | Filter rules |
 | `n` | New rule |
 | `e` | Edit selected rule |
 | `d` | Delete selected rule |
 | `Space` | Toggle start/stop tunnel |
-| `r` | Restart tunnel |
 | `l` | Open log view for selected tunnel |
+| `g` | Open global log view |
+| `t` | Toggle theme |
 | `?` | Toggle help overlay |
 | `q` | Quit |
 | `Esc` | Back / cancel |
 
 ## Configuration
 
-Rules are persisted automatically. By default, configuration is stored in `~/.config/dwaar/rules.yaml`. You can also manually edit this file to import or modify rules in bulk.
+Rules are persisted automatically. By default, configuration is stored in `~/.config/dwaar/rules.yaml` (created with user-only `0600` permissions). You can also manually edit this file to import or modify rules in bulk.
+
+Example:
+
+```yaml
+version: 1
+rules:
+  - id: rule_1
+    name: db-direct
+    local_port: 5432
+    remote_host: 10.0.0.5
+    remote_port: 5432
+    protocol: tcp
+    auto_start: true
+  - id: rule_2
+    name: redis-via-bastion
+    local_port: 6379
+    remote_host: 10.0.0.6
+    remote_port: 6379
+    protocol: tcp
+    auto_start: false
+    via:
+      host: bastion.example.com
+      port: 22
+      user: deploy
+      identity_file: ~/.ssh/id_ed25519
+      # password: hunter2  # alternative to identity_file
+```
+
+> **Note**: an SSH password stored in the config file is kept in plaintext, protected only by file permissions. Prefer key-based authentication when possible.
 
 ## Development
 
@@ -71,6 +103,26 @@ The project is structured following standard Go project layouts:
 - `internal/tunnel` - Tunnel management and SSH forwarding logic.
 - `internal/config` - Configuration handling.
 - `internal/tui` - Bubble Tea views, components, and styling.
+
+Run the test suite:
+
+```bash
+go test ./...
+```
+
+## Website
+
+A bilingual (English / मराठी) marketing site lives in [`site/`](site/). It is a
+dependency-free static page — open `site/index.html` directly, or serve the
+folder:
+
+```bash
+cd site
+python3 -m http.server 8080
+# then open http://localhost:8080
+```
+
+See [`site/README.md`](site/README.md) for details.
 
 ## License
 

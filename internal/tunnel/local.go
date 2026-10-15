@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strconv"
 )
 
 func forwardLocal(ctx context.Context, rule ForwardRule, log io.Writer, counter *ByteCounter) (net.Listener, error) {
@@ -31,7 +32,7 @@ func forwardLocal(ctx context.Context, rule ForwardRule, log io.Writer, counter 
 func proxyLocal(ctx context.Context, local net.Conn, rule ForwardRule, log io.Writer, counter *ByteCounter) {
 	defer local.Close()
 
-	remoteAddr := fmt.Sprintf("%s:%d", rule.RemoteHost, rule.RemotePort)
+	remoteAddr := net.JoinHostPort(rule.RemoteHost, strconv.Itoa(rule.RemotePort))
 	remote, err := net.Dial("tcp", remoteAddr)
 	if err != nil {
 		fmt.Fprintf(log, "Failed to connect to remote %s: %v\n", remoteAddr, err)

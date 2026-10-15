@@ -6,6 +6,9 @@ import (
 	"io"
 	"net"
 	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -26,7 +29,7 @@ func forwardSSH(ctx context.Context, rule ForwardRule, log io.Writer, counter *B
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	addr := fmt.Sprintf("%s:%d", rule.Via.Host, rule.Via.Port)
+	addr := net.JoinHostPort(rule.Via.Host, strconv.Itoa(rule.Via.Port))
 	fmt.Fprintf(log, "Dialing SSH server %s...\n", addr)
 	client, err := ssh.Dial("tcp", addr, cfg)
 	if err != nil {
@@ -57,7 +60,7 @@ func forwardSSH(ctx context.Context, rule ForwardRule, log io.Writer, counter *B
 }
 
 func proxySSH(ctx context.Context, local net.Conn, sc *ssh.Client, rule ForwardRule, log io.Writer, counter *ByteCounter) {
-	remoteAddr := fmt.Sprintf("%s:%d", rule.RemoteHost, rule.RemotePort)
+	remoteAddr := net.JoinHostPort(rule.RemoteHost, strconv.Itoa(rule.RemotePort))
 	remote, err := sc.Dial("tcp", remoteAddr)
 	if err != nil {
 		fmt.Fprintf(log, "Failed to connect to remote %s via SSH: %v\n", remoteAddr, err)
@@ -96,7 +99,7 @@ func proxySSH(ctx context.Context, local net.Conn, sc *ssh.Client, rule ForwardR
 func buildAuthMethods(host *SSHHost) ([]ssh.AuthMethod, error) {
 	var methods []ssh.AuthMethod
 	if host.IdentityFile != "" {
-		key, err := os.ReadFile(host.IdentityFile)
+		key, err := os.ReadFile(expandHome(host.IdentityFile))
 		if err != nil {
 			return nil, err
 		}
@@ -106,5 +109,20 @@ func buildAuthMethods(host *SSHHost) ([]ssh.AuthMethod, error) {
 		}
 		methods = append(methods, ssh.PublicKeys(signer))
 	}
+	if host.Password != "" {
+		methods = append(methods, ssh.Password(host.Password))
+	}
+	if len(methods) == 0 {
+		return nil, fmt.Errorf("no SSH auth method: set identity_file or password")
+	}
 	return methods, nil
+}
+
+func expandHome(path string) string {
+	if strings.HasPrefix(path, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			return filepath.Join(home, path[2:])
+		}
+	}
+	return path
 }

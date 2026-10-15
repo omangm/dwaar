@@ -2,7 +2,6 @@ package tui
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -136,21 +135,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 	var cmd tea.Cmd
 
-	if keyMsg, ok := msg.(tea.KeyMsg); ok {
-		f, _ := os.OpenFile("/tmp/dwaar_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if f != nil {
-			f.WriteString(fmt.Sprintf("Key pressed: %s\n", keyMsg.String()))
-			f.Close()
-		}
-	}
-
 	switch msg := msg.(type) {
 	case statusMsg:
-		f, _ := os.OpenFile("/tmp/dwaar_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if f != nil {
-			f.WriteString(fmt.Sprintf("Status updated: %s %v\n", msg.ID, msg.Status.State))
-			f.Close()
-		}
 		m.statuses[msg.ID] = msg.Status
 		m.list.SetItems(m.listItems())
 		cmds = append(cmds, listenForEvents(m.manager.Events()))
@@ -284,7 +270,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.rules = append(m.rules, rule)
 			} else {
 				rule.ID = m.rules[m.editIdx].ID
-				rule.Via = m.rules[m.editIdx].Via
 				m.rules[m.editIdx] = rule
 			}
 			m.list.SetItems(m.listItems())

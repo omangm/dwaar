@@ -26,6 +26,7 @@ type SSHHost struct {
 	Port         int    `yaml:"port"`
 	User         string `yaml:"user"`
 	IdentityFile string `yaml:"identity_file,omitempty"`
+	Password     string `yaml:"password,omitempty"`
 }
 
 type TunnelStatus struct {

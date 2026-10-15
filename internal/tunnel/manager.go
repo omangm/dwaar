@@ -113,7 +113,7 @@ func (m *Manager) Stop(id string) error {
 		fmt.Fprintf(t.logBuf, "Tunnel stopped.\n")
 		fmt.Fprintf(m.globalLog, "[%s] Tunnel stopped.\n", t.rule.Name)
 		delete(m.tunnels, id)
-		
+
 		m.eventsCh <- StatusEvent{
 			ID: id,
 			Status: TunnelStatus{

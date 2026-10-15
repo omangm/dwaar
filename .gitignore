@@ -7,7 +7,7 @@
 bin/
 
 # Project specific binary
-dwaar
+/dwaar
 
 # Test binary, built with `go test -c`
 *.test
