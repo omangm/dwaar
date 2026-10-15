@@ -122,8 +122,6 @@ python3 -m http.server 8080
 # then open http://localhost:8080
 ```
 
-See [`site/README.md`](site/README.md) for details.
-
 ## License
 
 [MIT License](https://opensource.org/licenses/MIT)

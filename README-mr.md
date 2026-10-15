@@ -122,8 +122,6 @@ python3 -m http.server 8080
 # नंतर http://localhost:8080 उघडा
 ```
 
-अधिक माहितीसाठी [`site/README.md`](site/README.md) पाहा.
-
 ## परवाना (License)
 
 [MIT License](https://opensource.org/licenses/MIT)
